@@ -1,34 +1,41 @@
 package com.amazon.tests;
 
+import com.aventstack.extentreports.ExtentTest;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
+import org.testng.Assert;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
-
-import io.github.bonigarcia.wdm.WebDriverManager;
+import utils.ExtentReportManager;
 
 public class AddToCartTest {
     WebDriver driver;
+    ExtentTest test;
 
-    @BeforeClass
-    public void setUp() {
-        WebDriverManager.chromedriver().setup();
+    @BeforeTest
+    public void setup() {
         driver = new ChromeDriver();
         driver.manage().window().maximize();
-        driver.get("https://www.amazon.com/");
     }
 
     @Test
     public void addProductToCart() {
-        System.out.println("Amazon page opened successfully!");
-        // TODO: Add logic to search and add a product to the cart
+        test = ExtentReportManager.createTest("Add Product to Cart");
+        
+        driver.get("https://www.amazon.in");
+        test.info("Amazon page opened successfully!");
+        
+        String title = driver.getTitle();
+        test.info("Page title: " + title);
+        
+        Assert.assertTrue(title.contains("Amazon"), "Title verification failed!");
+        test.pass("Test Passed: addProductToCart");
     }
 
-    @AfterClass
+    @AfterTest
     public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
+        driver.quit();
+        ExtentReportManager.flushReport();
     }
 }
